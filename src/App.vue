@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
-import lines from "./components/lines11.ts";
+import lines from "./components/lines12.ts";
 
 onMounted(() => {
   lines();

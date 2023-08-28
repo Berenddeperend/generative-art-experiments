@@ -30,7 +30,16 @@ export default function lines() {
     offsets.y = y - offsets.margin;
   });
 
-  const svg = d3.select("#svg");
+  const svg = d3.select("#svg").attr("xmlns", "http://www.w3.org/2000/svg");
+
+  const makeSine = (i: number) => {
+    return d3.range(0, 15, 0.2).map((k) => {
+      return [
+        Math.sin(k) * 15 + offsets.margin + i * offsets.spacing,
+        k * offsets.spacing + offsets.margin + offsets.length * 0.3,
+      ];
+    });
+  };
 
   const loopie = () => {
     svg
@@ -38,9 +47,8 @@ export default function lines() {
       .data(range(offsets.lineCount))
       .join("path")
       .attr("stroke", "black")
-      .attr("fill", "none")
-      .attr("stroke-width", 1.5)
 
+      .attr("fill", "none")
       .attr("d", (d) => {
         return d3.line().curve(d3.curveCatmullRom.alpha(0.9))([
           [offsets.margin + d * offsets.spacing, offsets.margin],
@@ -48,8 +56,7 @@ export default function lines() {
             offsets.margin + d * offsets.spacing,
             offsets.margin + offsets.length * 0.3,
           ],
-
-          [offsets.x + offsets.margin, offsets.y + offsets.margin],
+          ...makeSine(d),
           [
             offsets.margin + d * offsets.spacing,
             offsets.margin + offsets.length * 0.7,
@@ -59,10 +66,6 @@ export default function lines() {
             offsets.length + offsets.margin,
           ],
         ]);
-
-        // return d3.line().x([10, 20, 10]).y(10);
-
-        // .curve(d3.curveCatmullRom.alpha(0.5));
       });
 
     requestAnimationFrame(loopie);
