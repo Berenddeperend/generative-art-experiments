@@ -14,18 +14,23 @@ export default function lines() {
   gui.add(offsets, "angle", 0, 10);
 
   const svg = d3.select("#svg");
+
+  const scale = d3.scaleLinear().domain([-1, 1]).range([1.5, 2.5]);
+
   addEventListener("mousemove", (e) => {
-    const [x, y] = d3.pointer(e);
-    offsets.x = x;
-    offsets.y = y;
+    // const [x, y] = d3.pointer(e);
+    // offsets.x = x;
+    // offsets.angle = y / 100;
   });
 
   const loopie = () => {
-    offsets.angle += 0.01;
+    offsets.angle += 0.001;
     const spiral = Array.from({ length: offsets.number }, (_, i) => [
-      (Math.PI / offsets.angle) * i, // angle (in radians)
+      (Math.PI / Math.sin(offsets.angle)) * i, // angle (in radians)
       offsets.radius * i, // radius
     ]);
+
+    // 1.5 tot 2.6
 
     const yoink = d3.lineRadial()(spiral);
     svg
@@ -37,6 +42,14 @@ export default function lines() {
       .attr("fill", "none")
 
       .attr("d", yoink);
+
+    d3.select("body")
+      .selectAll("p")
+      .data([offsets.angle])
+      .join("p")
+      .attr("style", "position: absolute; top: 0; left: 0;")
+      // .data(offsets.angle)
+      .text(scale());
 
     requestAnimationFrame(loopie);
   };

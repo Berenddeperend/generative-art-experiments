@@ -14,6 +14,7 @@ export default function lines() {
     y: 30,
     x: 30,
     margin: 100,
+    intensity: 10,
   };
 
   gui.add(offsets, "lineCount", 0, 500);
@@ -22,6 +23,7 @@ export default function lines() {
   gui.add(offsets, "y", 0, 1000);
   gui.add(offsets, "x", 0, 1000);
   gui.add(offsets, "margin", 0, 100);
+  gui.add(offsets, "intensity", -50, 50);
 
   addEventListener("mousemove", (e) => {
     const [x, y] = d3.pointer(e);
@@ -33,9 +35,9 @@ export default function lines() {
   const svg = d3.select("#svg").attr("xmlns", "http://www.w3.org/2000/svg");
 
   const makeSine = (i: number) => {
-    return d3.range(0, 15, 0.2).map((k) => {
+    return d3.range(1, 15, 0.2).map((k) => {
       return [
-        Math.sin(k) * 15 + offsets.margin + i * offsets.spacing,
+        Math.sin(k) * offsets.intensity + offsets.margin + i * offsets.spacing,
         k * offsets.spacing + offsets.margin + offsets.length * 0.3,
       ];
     });
@@ -50,7 +52,7 @@ export default function lines() {
 
       .attr("fill", "none")
       .attr("d", (d) => {
-        return d3.line().curve(d3.curveCatmullRom.alpha(0.9))([
+        return d3.line().curve(d3.curveMonotoneY)([
           [offsets.margin + d * offsets.spacing, offsets.margin],
           [
             offsets.margin + d * offsets.spacing,
